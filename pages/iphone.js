@@ -2,45 +2,30 @@
 import IphoneSearch from '../app/IphoneSupport/IphoneSearch';
 import ProgressTracker from '../Checkpoints/ProgressTracker';
 import '../app/IphoneSupport/IphoneSupport.css';
-import './IphoneQuiz.js'
 
 export default function IphonePage() {
     const [videoComments, setVideoComments] = useState([[], [], []]);
+    const [uploadedVideoComments, setUploadedVideoComments] = useState([]);
     const [commentInputs, setCommentInputs] = useState(['', '', '']);
     const [replyInputs, setReplyInputs] = useState([[], [], []]);
-    const [nestedReplyInputs, setNestedReplyInputs] = useState([[], [], []]);
-    const [uploadedVideos, setUploadedVideos] = useState([[], [], []]);
+    const [uploadedVideos, setUploadedVideos] = useState([]);
+    const [videoTitles, setVideoTitles] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [canProceed, setCanProceed] = useState(false);
-    const [showTasks, setShowTasks] = useState(false);
-    const [message, setMessage] = useState('');
-    const [reloadKey, setReloadKey] = useState(0); // New state variable to trigger re-render
-    const IphonePage = () => {
-        const [quizPassed, setQuizPassed] = useState(false);
+    const [videoFile, setVideoFile] = useState(null);
+    const [titleInputs, setTitleInputs] = useState([]);
 
-        useEffect(() => {
-            const passed = localStorage.getItem('quizPassed');
-            if (passed === 'true') {
-                setQuizPassed(true);
-                setMessage('Congratulations! You have passed the quiz! 🎉');
-                localStorage.removeItem('quizPassed'); // Optionally remove after reading
-            }
-        }, []);
+    useEffect(() => {
+        const storedVideos = JSON.parse(localStorage.getItem('uploadedVideos')) || [];
+        const storedTitles = JSON.parse(localStorage.getItem('videoTitles')) || [];
+        setUploadedVideos(storedVideos);
+        setVideoTitles(storedTitles);
+        setUploadedVideoComments(new Array(storedVideos.length).fill([]));
+    }, []);
 
-        return (
-            <div className="min-h-screen bg-black text-white flex flex-col items-center">
-                <h1 className="glow cursive-font animate-fadeIn">iPhone Video Guides</h1>
-                {quizPassed && (
-                    <div className="success-message">
-                        {message}
-                    </div>
-                )}
-                {/* Other components like IphoneSearch and ProgressTracker */}
-                <IphoneSearch />
-                <ProgressTracker />
-            </div>
-        );
-    }
+    const handleSearch = () => {
+        console.log("Searching for:", searchQuery);
+    };
 
     const handleCommentSubmit = (index) => {
         const commentInput = commentInputs[index];
@@ -56,225 +41,170 @@ export default function IphonePage() {
         }
     };
 
+    const handleUploadedCommentSubmit = (uploadedIndex) => {
+        const commentInput = commentInputs[uploadedIndex + 3];
+        if (commentInput) {
+            const updatedComments = [...uploadedVideoComments];
+            updatedComments[uploadedIndex] = updatedComments[uploadedIndex] || [];
+            updatedComments[uploadedIndex].push({ text: commentInput, replies: [] });
+            setUploadedVideoComments(updatedComments);
+            setCommentInputs((prev) => {
+                const newInputs = [...prev];
+                newInputs[uploadedIndex + 3] = '';
+                return newInputs;
+            });
+        }
+    };
+
     const handleReplySubmit = (videoIndex, commentIndex) => {
-        const replyInput = replyInputs[videoIndex][commentIndex];
+        const replyInput = replyInputs[videoIndex]?.[commentIndex] || '';
         if (replyInput) {
-            const updatedComments = [...videoComments];
-            updatedComments[videoIndex][commentIndex].replies.push({ text: replyInput, replies: [] });
-            setVideoComments(updatedComments);
-            setReplyInputs((prev) => {
-                const newReplies = [...prev];
-                newReplies[videoIndex][commentIndex] = '';
-                return newReplies;
-            });
+            const updatedComments = [...uploadedVideoComments];
+            if (updatedComments[videoIndex] && updatedComments[videoIndex][commentIndex]) {
+                if (!updatedComments[videoIndex][commentIndex].replies) {
+                    updatedComments[videoIndex][commentIndex].replies = [];
+                }
+                updatedComments[videoIndex][commentIndex].replies.push({ text: replyInput });
+                setUploadedVideoComments(updatedComments);
+                setReplyInputs((prev) => {
+                    const newReplies = [...prev];
+                    newReplies[videoIndex] = newReplies[videoIndex] || [];
+                    newReplies[videoIndex][commentIndex] = '';
+                    return newReplies;
+                });
+            }
         }
     };
 
-    const handleNestedReplySubmit = (videoIndex, commentIndex, replyIndex) => {
-        const nestedReplyInput = nestedReplyInputs[videoIndex][commentIndex]?.[replyIndex];
-        if (nestedReplyInput) {
-            const updatedComments = [...videoComments];
-            updatedComments[videoIndex][commentIndex].replies[replyIndex].replies.push(nestedReplyInput);
-            setVideoComments(updatedComments);
-            setNestedReplyInputs((prev) => {
-                const newNestedReplies = [...prev];
-                newNestedReplies[videoIndex][commentIndex][replyIndex] = '';
-                return newNestedReplies;
-            });
-        }
+    const handleDeleteUploadedVideo = (uploadedIndex) => {
+        const updatedVideos = uploadedVideos.filter((_, index) => index !== uploadedIndex);
+        const updatedComments = uploadedVideoComments.filter((_, index) => index !== uploadedIndex);
+        const updatedTitles = videoTitles.filter((_, index) => index !== uploadedIndex);
+        setUploadedVideos(updatedVideos);
+        setUploadedVideoComments(updatedComments);
+        setVideoTitles(updatedTitles);
+        localStorage.setItem('uploadedVideos', JSON.stringify(updatedVideos));
+        localStorage.setItem('videoTitles', JSON.stringify(updatedTitles));
     };
 
-    const handleVideoUpload = (index, event) => {
+    const handleVideoUpload = (event) => {
         const file = event.target.files[0];
         if (file) {
-            const updatedVideos = [...uploadedVideos];
-            updatedVideos[index].push(URL.createObjectURL(file));
-            setUploadedVideos(updatedVideos);
-            event.target.value = null;
+            const videoURL = URL.createObjectURL(file);
+            setVideoFile(file);
+            setUploadedVideos((prevVideos) => {
+                const updatedVideos = [...prevVideos, videoURL];
+                localStorage.setItem('uploadedVideos', JSON.stringify(updatedVideos));
+                setUploadedVideoComments((prevComments) => [...prevComments, []]);
+                setVideoTitles((prevTitles) => [...prevTitles, '']);
+                return updatedVideos;
+            });
         }
     };
 
-    const handleSearch = (e) => {
-        e.preventDefault();
-        console.log('Searching for:', searchQuery);
+    const handleTitleInputChange = (index, title) => {
+        const updatedTitleInputs = [...titleInputs];
+        updatedTitleInputs[index] = title;
+        setTitleInputs(updatedTitleInputs);
     };
 
-    const handleCompletion = (isComplete) => {
-        setCanProceed(isComplete);
-        if (isComplete) {
-            setReloadKey((prev) => prev + 1); // Increment to trigger a re-render
-        }
+    const handleSaveTitle = (index) => {
+        const updatedTitles = [...videoTitles];
+        updatedTitles[index] = titleInputs[index];
+        setVideoTitles(updatedTitles);
+        localStorage.setItem('videoTitles', JSON.stringify(updatedTitles));
+    };
+
+    const handleCompletion = () => {
+        console.log("Progress completed");
+        setCanProceed(true);
     };
 
     return (
         <div className="min-h-screen bg-black text-white flex flex-col items-center">
+            <ProgressTracker handleCompletion={handleCompletion} />
+
             <h1 className="glow cursive-font animate-fadeIn">iPhone Video Guides</h1>
             <IphoneSearch searchQuery={searchQuery} setSearchQuery={setSearchQuery} handleSearch={handleSearch} />
 
-            <button
-                className="toggle-tasks-button mb-4"
-                onClick={() => setShowTasks((prev) => !prev)}
-            >
-                {showTasks ? 'Hide Tasks' : 'Show Tasks'}
-            </button>
+            <div className="main-video-button" onClick={() => document.getElementById('main-video-upload-input').click()} style={{ cursor: 'pointer', padding: '10px 20px', backgroundColor: '#444', color: '#fff', borderRadius: '5px', textAlign: 'center', marginBottom: '20px' }}>
+                Import Your Own Guide
+                <input
+                    id="main-video-upload-input"
+                    type="file"
+                    accept="video/*"
+                    onChange={handleVideoUpload}
+                    style={{ display: 'none' }}
+                />
+            </div>
 
-            {showTasks && (
-                <div className="progress-tracker-box">
-                    <ProgressTracker onCompletion={handleCompletion} />
-                </div>
-            )}
+            {uploadedVideos.map((videoURL, uploadedIndex) => (
+                <div key={uploadedIndex} className="uploaded-video-container mt-4" style={{ maxWidth: '600px', margin: '0 auto' }}>
+                    <video controls src={videoURL} className="uploaded-video" style={{ width: '100%', height: 'auto' }}></video>
+                    
+                    {videoTitles[uploadedIndex] ? (
+                        <p className="video-title mt-2 text-center">{videoTitles[uploadedIndex]}</p>
+                    ) : (
+                        <div className="title-input-container mt-2">
+                            <input
+                                type="text"
+                                placeholder="Enter video title..."
+                                value={titleInputs[uploadedIndex] || ''}
+                                onChange={(e) => handleTitleInputChange(uploadedIndex, e.target.value)}
+                                className="video-title-input"
+                            />
+                            <button onClick={() => handleSaveTitle(uploadedIndex)} className="save-title-button ml-2">
+                                Enter
+                            </button>
+                        </div>
+                    )}
 
-            {!canProceed && (
-                <div className="warning">
-                    Please complete all tasks to proceed!
-                </div>
-            )}
-
-            {message && (
-                <div className="success-message">
-                    {message}
-                </div>
-            )}
-
-            {['https://www.youtube.com/watch?v=0nG7pAXRgvE', 'https://www.youtube.com/watch?v=pXvd8HNAdAk', 'https://www.youtube.com/watch?v=eyW7ytgNVwU'].map((videoUrl, index) => (
-                <div key={index} className="video-section mb-8">
-                    <iframe
-                        width="560"
-                        height="315"
-                        src={videoUrl.replace('watch?v=', 'embed/')}
-                        title={`Video ${index + 1}`}
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                    ></iframe>
-
-                    <div className="video-upload mt-2">
-                        <input
-                            type="file"
-                            accept="video/*"
-                            onChange={(event) => handleVideoUpload(index, event)}
-                            className="upload-input"
-                        />
-                        <button className="upload-button hover:bg-gray-600 transition duration-300">Upload Your Video</button>
-                    </div>
-
-                    <div className="uploaded-videos">
-                        {uploadedVideos[index].map((videoSrc, videoIndex) => (
-                            <video key={videoIndex} width="320" height="240" controls>
-                                <source src={videoSrc} type="video/mp4" />
-                                Your browser does not support the video tag.
-                            </video>
-                        ))}
-                    </div>
-
-                    <div className="feedback-form mt-4">
-                        <h3 className="comment-prompt">This is the comment box:</h3>
-                        <textarea
-                            className="comment-input"
-                            placeholder="Leave a comment..."
-                            value={commentInputs[index]}
-                            onChange={(e) => {
-                                const newInputs = [...commentInputs];
-                                newInputs[index] = e.target.value;
-                                setCommentInputs(newInputs);
-                            }}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter') {
-                                    e.preventDefault();
-                                    handleCommentSubmit(index);
-                                }
-                            }}
-                        />
-                        <button onClick={() => handleCommentSubmit(index)}>Submit</button>
-                    </div>
-
-                    <div className="comment-display mt-2">
-                        {videoComments[index].map((comment, commentIndex) => (
-                            <div key={commentIndex} className="comment-box">
-                                <p className="comment-text"><strong>Comment:</strong> {comment.text}</p>
-                                <button className="reply-button" onClick={() => {
-                                    const newReplies = [...replyInputs];
-                                    if (!newReplies[index]) newReplies[index] = [];
-                                    newReplies[index][commentIndex] = '';
-                                    setReplyInputs(newReplies);
-                                }}>Reply</button>
-
-                                {replyInputs[index][commentIndex] !== undefined && (
-                                    <div>
-                                        <textarea
-                                            className="comment-input"
-                                            placeholder="Leave a reply..."
-                                            value={replyInputs[index][commentIndex] || ''}
-                                            onChange={(e) => {
-                                                const newReplies = [...replyInputs];
-                                                if (!newReplies[index]) newReplies[index] = [];
-                                                newReplies[index][commentIndex] = e.target.value;
-                                                setReplyInputs(newReplies);
-                                            }}
-                                            onKeyDown={(e) => {
-                                                if (e.key === 'Enter') {
-                                                    e.preventDefault();
-                                                    handleReplySubmit(index, commentIndex);
-                                                }
-                                            }}
-                                        />
-                                        <button onClick={() => handleReplySubmit(index, commentIndex)}>Submit Reply</button>
-                                    </div>
-                                )}
-
-                                {comment.replies.length > 0 && (
+                    <div className="comments mt-4">
+                        {uploadedVideoComments[uploadedIndex] && uploadedVideoComments[uploadedIndex].length > 0 ? (
+                            uploadedVideoComments[uploadedIndex].map((comment, commentIndex) => (
+                                <div key={commentIndex} className="comment mb-2">
+                                    <p>{comment.text}</p>
                                     <div className="replies">
-                                        {comment.replies.map((reply, replyIndex) => (
-                                            <div key={replyIndex} className="reply-box">
-                                                <p className="reply-text">Reply: {reply.text}</p>
-                                                <button className="reply-button" onClick={() => {
-                                                    const newNestedReplies = [...nestedReplyInputs];
-                                                    if (!newNestedReplies[index]) newNestedReplies[index] = [];
-                                                    if (!newNestedReplies[index][commentIndex]) newNestedReplies[index][commentIndex] = [];
-                                                    newNestedReplies[index][commentIndex][replyIndex] = '';
-                                                    setNestedReplyInputs(newNestedReplies);
-                                                }}>Reply</button>
-
-                                                {nestedReplyInputs[index][commentIndex]?.[replyIndex] !== undefined && (
-                                                    <div>
-                                                        <textarea
-                                                            className="comment-input"
-                                                            placeholder="Leave a reply to this reply..."
-                                                            value={nestedReplyInputs[index][commentIndex]?.[replyIndex] || ''}
-                                                            onChange={(e) => {
-                                                                const newNestedReplies = [...nestedReplyInputs];
-                                                                if (!newNestedReplies[index]) newNestedReplies[index] = [];
-                                                                if (!newNestedReplies[index][commentIndex]) newNestedReplies[index][commentIndex] = [];
-                                                                newNestedReplies[index][commentIndex][replyIndex] = e.target.value;
-                                                                setNestedReplyInputs(newNestedReplies);
-                                                            }}
-                                                            onKeyDown={(e) => {
-                                                                if (e.key === 'Enter') {
-                                                                    e.preventDefault();
-                                                                    handleNestedReplySubmit(index, commentIndex, replyIndex);
-                                                                }
-                                                            }}
-                                                        />
-                                                        <button onClick={() => handleNestedReplySubmit(index, commentIndex, replyIndex)}>Submit Nested Reply</button>
-                                                    </div>
-                                                )}
-
-                                                {reply.replies.length > 0 && (
-                                                    <div className="nested-replies">
-                                                        {reply.replies.map((nestedReply, nestedReplyIndex) => (
-                                                            <p key={nestedReplyIndex} className="reply-text">Nested Reply: {nestedReply}</p>
-                                                        ))}
-                                                    </div>
-                                                )}
+                                        {comment.replies && comment.replies.map((reply, replyIndex) => (
+                                            <div key={replyIndex} className="reply mb-1">
+                                                <p>{reply.text}</p>
                                             </div>
                                         ))}
+                                        <input
+                                            type="text"
+                                            placeholder="Reply..."
+                                            value={replyInputs[uploadedIndex]?.[commentIndex] || ''}
+                                            onChange={(e) => {
+                                                const updatedReplies = [...replyInputs];
+                                                updatedReplies[uploadedIndex] = updatedReplies[uploadedIndex] || [];
+                                                updatedReplies[uploadedIndex][commentIndex] = e.target.value;
+                                                setReplyInputs(updatedReplies);
+                                            }}
+                                            className="reply-input"
+                                        />
+                                        <button onClick={() => handleReplySubmit(uploadedIndex, commentIndex)} className="reply-submit-button hover:bg-blue-600 transition duration-300">Reply</button>
                                     </div>
-                                )}
-                            </div>
-                        ))}
+                                </div>
+                            ))
+                        ) : (
+                            <p>No comments yet. Be the first to comment!</p>
+                        )}
+                        <input
+                            type="text"
+                            placeholder="Add a comment..."
+                            value={commentInputs[uploadedIndex + 3] || ''}
+                            onChange={(e) => {
+                                const updatedInputs = [...commentInputs];
+                                updatedInputs[uploadedIndex + 3] = e.target.value;
+                                setCommentInputs(updatedInputs);
+                            }}
+                            className="comment-input"
+                        />
+                        <button onClick={() => handleUploadedCommentSubmit(uploadedIndex)} className="comment-submit-button hover:bg-green-600 transition duration-300">Comment</button>
+                        <button onClick={() => handleDeleteUploadedVideo(uploadedIndex)} className="delete-video-button hover:bg-red-600 transition duration-300">Delete Video</button>
                     </div>
                 </div>
             ))}
-
         </div>
     );
 }

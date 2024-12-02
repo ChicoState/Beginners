@@ -5,20 +5,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap');
 
 :root {
-    --background: #ffffff;
+    --background: #fceed1;
     --foreground: #171717;
     --cursive-font: 'Dancing Script', cursive; /* Define the cursive font */
 }
 
 @media (prefers-color-scheme: dark) {
     :root {
-        --background: #0a0a0a;
+        --background: #fceed1;
         --foreground: #ededed;
     }
 }
 
 body {
-    color: var(--foreground);
+    color: #fceed1;
     background: var(--background);
     font-family: Arial, Helvetica, sans-serif;
 }
@@ -51,14 +51,14 @@ body {
     }
 
         .search-container input:focus {
-            border-color: #007bff;
+            border-color: sandybrown;
             outline: none;
         }
 
     /* Styles for the button */
     .search-container button {
         padding: 10px 20px;
-        background-color: #007bff;
+        background-color: sandybrown;
         color: white;
         border: none;
         border-radius: 20px;
@@ -104,5 +104,5 @@ body {
 
 /* Glowing effect */
 .glow {
-    text-shadow: 0 0 5px yellow, 0 0 10px yellow, 0 0 15px yellow;
+    text-shadow: 0 0 5px brown, 0 0 10px brown, 0 0 15px brown;
 }

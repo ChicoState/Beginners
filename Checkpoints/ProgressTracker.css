@@ -1,43 +1,80 @@
-/* Styles for the progress tracker container */
 .progress-tracker {
-    margin: 20px; /* Add some margin */
-    padding: 15px; /* Add padding */
-    border: 1px solid #ccc; /* Light gray border */
-    border-radius: 10px; /* Rounded corners */
-    background-color: #f9f9f9; /* Light background color */
+    margin: 20px;
+    padding: 20px;
+    border: 2px solid #ffc107;
+    border-radius: 15px;
+    background: linear-gradient(145deg, #fff8e1, #fff3cd);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease-in-out;
+    animation: bounce 1.5s infinite alternate;
 }
 
-/* Individual task styling */
+    .progress-tracker:hover {
+        transform: scale(1.02);
+    }
+
+@keyframes bounce {
+    from {
+        transform: translateY(0);
+    }
+
+    to {
+        transform: translateY(-5px);
+    }
+}
+
 .task {
-    margin: 10px 0; /* Space between tasks */
-    color: black; /* Text color for tasks */
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+    padding: 5px;
+    color: #333;
+    font-size: 1.1em;
+    border-radius: 8px;
+    background: #fff8e1;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, transform 0.3s;
 }
 
-/* Loading message styling */
-.loading-message {
-    color: black; /* Change loading message color to yellow */
-    font-weight: bold; /* Make the loading message bold */
+    .task.completed {
+        background-color: #ffe0b2;
+        color: #ff8c00;
+        transform: scale(1.05);
+    }
+
+.task-indicator {
+    font-size: 1.5em;
+    margin-left: auto;
+    transition: transform 0.3s ease-in-out;
 }
 
-/* Quiz button styling */
+.task.completed .task-indicator {
+    transform: rotate(360deg);
+    color: #ffeb3b;
+}
+
 .quiz-button {
-    margin-top: 10px; /* Space above the button */
-    background-color: #007bff; /* Button color (blue) */
-    color: white; /* Text color */
-    border: none; /* No border */
-    border-radius: 5px; /* Rounded corners */
-    padding: 10px; /* Padding for the button */
-    cursor: pointer; /* Pointer cursor on hover */
-    transition: background-color 0.3s; /* Smooth transition for background color */
+    margin-top: 15px;
+    padding: 12px;
+    background-color: #ff9800;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1em;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s, transform 0.2s;
 }
 
     .quiz-button:hover {
-        background-color: #0056b3; /* Darker shade on hover */
+        background-color: #e65100;
+        transform: translateY(-3px);
     }
 
-/* Completion message styling */
 .completion-message {
-    color: black; /* Change completion message color to yellow */
-    margin-top: 10px; /* Space above the message */
-    font-weight: bold; /* Make the completion message bold */
+    color: #ff8c00;
+    margin-top: 15px;
+    font-weight: bold;
+    font-size: 1.2em;
+    text-align: center;
 }

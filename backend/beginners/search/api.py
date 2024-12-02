@@ -1,22 +1,38 @@
-from ninja import NinjaAPI, Schema
-from typing import List
+# api.py in backend/search/api.py
+
+from ninja import NinjaAPI
+from .models import Post
+from .schemas import PostSchema, CreatePostSchema, DeletePostResponseSchema
 
 api = NinjaAPI()
 
-class SearchResultSchema(Schema):
-    id: int
-    title: str
-    description: str
-    url: str
+# Fetch all posts
+@api.get("/posts", response=list[PostSchema])
+def get_posts(request):
+    posts = Post.objects.all()
+    return posts
 
-class SearchQuery(Schema):
-    query: str
+# Create a new post
+@api.post("/posts", response=PostSchema)
+def create_post(request, post: CreatePostSchema):
+    print(f"Received data: {post}")  # Log the incoming data
+    try:
+        new_post = Post.objects.create(
+            title=post.title,
+            content=post.content
+        )
+        return PostSchema.from_orm(new_post)
+    except Exception as e:
+        print(f"Error creating post: {e}")  # Log any error
+        raise e
 
-@api.post("/search", response=List[SearchResultSchema])
-def search(request, query: SearchQuery):
-    # This is a placeholder. Replace with actual search logic.
-    results = [
-        {"id": 1, "title": f"Result for {query.query}", "description": "This is a sample result", "url": "http://example.com"},
-        {"id": 2, "title": f"Another result for {query.query}", "description": "This is another sample result", "url": "http://example.org"},
-    ]
-    return results
+
+# Delete a post
+@api.delete("/posts/{post_id}", response=DeletePostResponseSchema)
+def delete_post(request, post_id: int):
+    try:
+        post = Post.objects.get(id=post_id)
+        post.delete()
+        return DeletePostResponseSchema(status="success", message="Post deleted successfully!")
+    except Post.DoesNotExist:
+        return DeletePostResponseSchema(status="error", message="Post not found.")
