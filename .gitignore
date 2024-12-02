@@ -38,5 +38,7 @@ next-env.d.ts
 # ignore Visual Studio files
 .vs/
 
+#django
+db.sqlite3
 #ignore venv
 venv/

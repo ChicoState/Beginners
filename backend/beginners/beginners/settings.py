@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     'ninja',
     'corsheaders',
     'search',
+    'beginners'
 ]
 
 MIDDLEWARE = [
