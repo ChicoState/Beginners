@@ -11,3 +11,17 @@ services:
     environment:
       - NODE_ENV=development
     command: npm run dev
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: .
+      target: development
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    command: sh -c "cd backend/beginners && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    environment:
+      - PYTHONUNBUFFERED=1

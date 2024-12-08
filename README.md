@@ -2,22 +2,136 @@
 
 ## Docker Setup
 
-Our Docker configuration supports two environments: development and production.
+Our Docker configuration supports both frontend (Next.js) and backend (Django) services in a development environment.
 
-### Development Environment
+### Project Structure
+- Frontend: Next.js application (port 3000)
+- Backend: Django API (port 8000)
 
-The development setup uses Docker Compose to create an environment with live reloading:
+### Getting Started with Docker
 
-- Dockerfile will run `npm run dev` for you
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-username/your-repo-name.git
+   cd your-repo-name
+   ```
 
-This allows you to see your changes in real-time without rebuilding the Docker image (make sure to disable cache in browser settings).
+2. Start the development environment:
+   ```bash
+   docker-compose up --build
+   ```
 
-### Production Environment
+3. Access the applications:
+   - Frontend: http://localhost:3000
+   - Backend API: http://localhost:8000/api/posts
+   - Django Admin: http://localhost:8000/admin
 
-The production setup builds an optimized version of the app:
+### When to Use Different Docker Commands
 
-- Runs `npm run build` for you
-- This is exactly what a live server would do
+1. **`docker-compose up --build`**
+   Use this when:
+   - Starting the project for the first time
+   - After changing Dockerfile or docker-compose.yml
+   - After adding new dependencies (in requirements.txt or package.json)
+   - When you want to ensure all images are up to date
+   
+2. **`docker-compose up`**
+   Use this when:
+   - No changes to Docker configuration or dependencies
+   - Only working on application code
+   - Restarting after a temporary shutdown
+   - Daily development work
+
+3. **`docker-compose up -d`**
+   Use this when:
+   - You want to run containers in the background
+   - You don't need to see logs immediately
+   - You'll be using other terminal windows
+
+### Docker Commands Reference
+
+1. **Basic Commands:**
+   ```bash
+   # Start services and see logs
+   docker-compose up
+
+   # Start services in background
+   docker-compose up -d
+
+   # Stop services (when running with -d)
+   docker-compose down
+
+   # View running containers
+   docker-compose ps
+
+   # View logs (when running detached)
+   docker-compose logs -f         # All logs
+   docker-compose logs -f backend # Only backend logs
+   ```
+
+2. **Development Workflow:**
+   ```bash
+   # Start development session
+   docker-compose up -d
+
+   # When making backend changes that need restart
+   docker-compose restart backend  # Quick restart
+   # OR
+   docker-compose up --build backend  # Full rebuild if needed
+
+   # Run migrations
+   docker-compose exec backend python manage.py migrate
+
+   # Create new migrations
+   docker-compose exec backend python manage.py makemigrations
+
+   # Frontend changes auto-reload
+   # (no restart needed)
+
+   # End development session
+   docker-compose down
+   ```
+
+3. **Troubleshooting:**
+   ```bash
+   # Check container status
+   docker-compose ps
+
+   # View logs
+   docker-compose logs
+
+   # Full reset
+   docker-compose down
+   docker-compose up --build
+
+   # Reset everything (including volumes)
+   docker-compose down -v
+   ```
+
+### Understanding Docker in This Project
+
+1. **Container Persistence:**
+   - Stopping with Ctrl+C: Containers remain but stop running
+   - `docker-compose down`: Removes containers and networks
+   - Your code changes persist (mounted as volumes)
+   - Database persists unless manually deleted
+
+2. **Development Features:**
+   - Live reload for Next.js frontend
+   - Django backend auto-reloads on code changes
+   - Shared network between services
+   - Mounted volumes for real-time development
+
+3. **Best Practices:**
+   - Use `docker-compose up -d` for development sessions
+   - Check logs with `docker-compose logs -f`
+   - Restart backend after significant changes
+   - Always use `docker-compose down` at the end of session
+
+4. **Data Management:**
+   - Code changes are reflected immediately
+   - Database persists between restarts
+   - Use `down -v` to reset all data
 
 ## Running with Docker
 
@@ -131,3 +245,41 @@ The production setup builds an optimized version of the app:
 - React DOM ^18
 - Tailwind CSS ^3.4.1
 - PostCSS ^8
+
+### When to Restart the Backend
+
+1. **Commands for Backend Restart:**
+   ```bash
+   # Restart only the backend service
+   docker-compose restart backend
+
+   # Alternative: Stop and start backend
+   docker-compose stop backend
+   docker-compose start backend
+
+   # If changes aren't reflecting, full rebuild:
+   docker-compose up --build backend
+   ```
+
+2. **When to Restart Backend:**
+   - After adding new Python dependencies
+   - When modifying Django models (after migrations)
+   - If you change Django settings
+   - When adding new API endpoints
+   - If the backend seems unresponsive
+   - When Django's auto-reload fails
+
+3. **When NOT to Restart Backend:**
+   - For most Python code changes (Django auto-reloads)
+   - For frontend/Next.js changes
+   - When only viewing logs
+   - After database queries
+
+4. **Auto-Reload vs Restart:**
+   - Django auto-reloads for most `.py` file changes
+   - Some changes require manual restart:
+     - URL configuration changes
+     - Middleware changes
+     - Environment variable changes
+     - New dependencies
+     - Database migrations

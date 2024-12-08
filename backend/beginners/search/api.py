@@ -33,6 +33,6 @@ def delete_post(request, post_id: int):
     try:
         post = Post.objects.get(id=post_id)
         post.delete()
-        return DeletePostResponseSchema(status="success", message="Post deleted successfully!")
+        return DeletePostResponseSchema(id=post_id, status="success", message="Post deleted successfully!")
     except Post.DoesNotExist:
-        return DeletePostResponseSchema(status="error", message="Post not found.")
+        return DeletePostResponseSchema(id=post_id, status="error", message="Post not found.")
