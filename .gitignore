@@ -27,6 +27,7 @@ yarn-error.log*
 
 # local env files
 .env*.local
+.env
 
 # vercel
 .vercel
@@ -34,9 +35,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
-# ignore Visual Studio files
-.vs/
 
 # Django
 *.log
@@ -76,6 +74,9 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+backend/**/__pycache__/
+backend/**/migrations/*.py
+!backend/**/migrations/__init__.py
 
 # Django IDE specific
 .idea/
@@ -88,3 +89,11 @@ wheels/
 /static/
 /staticfiles/
 /media/
+
+# Docker
+.docker/
+docker-compose.override.yml
+
+# System
+.DS_Store
+Thumbs.db
