@@ -1,5 +1,7 @@
 # Beginners Next.js App
 
+APP WILL NOT WORK WITHOUT PRIVATE API KEY.
+
 ## Quick Start with Docker
 
 ### First Time Setup
@@ -7,6 +9,9 @@
 # Clone the repository
 git clone https://github.com/your-username/your-repo-name.git
 cd your-repo-name
+
+# Create .env file in root directory with:
+# ANTHROPIC_API_KEY=your_api_key_here
 
 # Build and start containers
 docker compose up --build
@@ -46,6 +51,13 @@ docker compose up --build
 docker compose logs -f nextapp  # Frontend logs
 docker compose logs -f backend  # Backend logs
 ```
+
+## Environment Setup
+You need only one `.env` file in the root directory with:
+```
+ANTHROPIC_API_KEY=your_api_key_here
+```
+This will be automatically used by both frontend and backend containers.
 
 ## Accessing the App
 - Frontend: http://localhost:3000
