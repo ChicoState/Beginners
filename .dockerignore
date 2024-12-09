@@ -1,7 +1,13 @@
-Dockerfile
-.dockerignore
+.git
+.gitignore
+.next
+.env
 node_modules
 npm-debug.log
 README.md
-.next
-.git
+.dockerignore
+Dockerfile
+docker-compose*
+**/migrations/__pycache__
+**/__pycache__
+*.pyc

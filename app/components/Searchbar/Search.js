@@ -1,95 +1,204 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Link from 'next/link';
+import { useState, useEffect } from "react";
+import { defaultTopics } from "../../constants/topics";
 
-export default function Searchbar() {
-    const [query, setQuery] = useState('');
-    const [searchResults, setSearchResults] = useState([]);
+// Helper function to properly capitalize words
+const capitalizeWords = (str) => {
+  // List of words that should not be capitalized (articles, conjunctions, prepositions)
+  const lowercaseWords = new Set(['a', 'an', 'the', 'and', 'but', 'or', 'for', 'nor', 'on', 'at', 'to', 'in', 'of', 'with']);
+  
+  return str.split(' ').map((word, index) => {
+    // Convert word to lowercase for checking
+    const lowerWord = word.toLowerCase();
+    
+    // Always capitalize first and last word, proper nouns, or words not in our lowercase list
+    if (index === 0 || !lowercaseWords.has(lowerWord) || /[A-Z]/.test(word[0])) {
+      // Special handling for words with apostrophes or hyphens
+      return word.split(/(['-])/).map((part, i) => {
+        // If it's a separator (apostrophe/hyphen), keep it as is
+        if (i % 2 === 1) return part;
+        // Otherwise capitalize the first letter
+        return part.charAt(0).toUpperCase() + part.slice(1).toLowerCase();
+      }).join('');
+    }
+    
+    return lowerWord;
+  }).join(' ');
+};
 
-    const boxes = [
-        { id: 1, title: 'iPhone', image: '/pictures/iphone.jpg', link: '/iphone' },
-        { id: 2, title: 'Cooking', image: '/pictures/cooking.jpg', link: '/cooking' },
-        { id: 3, title: 'Guitar', image: '/pictures/guitar.jpg', link: '/guitar' },
-        { id: 4, title: 'Grilling', image: '/pictures/grilling.jpg', link: '/grilling' },
-        { id: 5, title: 'Math', image: '/pictures/math.jpg', link: '/math' },
-        { id: 6, title: 'Game Develop', image: '/pictures/gamedevelop.jpg', link: '/gamedevelop' }
-    ];
+export default function Search({ onSearchResults }) {
+  const [query, setQuery] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-    const handleSearch = (query) => {
-        setQuery(query);
-        const filteredBoxes = boxes.filter(box =>
-            box.title.toLowerCase().includes(query.toLowerCase())
-        );
-        setSearchResults(filteredBoxes);
+  // Cache configuration
+  const CACHE_KEY = "learningStepsCache";
+  const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+
+  const clearSearch = () => {
+    setQuery("");
+    onSearchResults({
+      searchResults: [],
+      learningSteps: null,
+      isFromCache: false,
+      formattedQuery: "",
+      currentQuery: "",
+      hasSearched: false
+    });
+  };
+
+  // Expose clearSearch to window for global access
+  useEffect(() => {
+    window.clearSearch = clearSearch;
+    return () => {
+      delete window.clearSearch;
     };
+  }, []);
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (query.trim()) {
-            handleSearch(query);
-            setQuery(''); // Clear the search bar after submission
+  const getCachedSteps = (topic) => {
+    const cachedData = localStorage.getItem(CACHE_KEY);
+    if (cachedData) {
+      try {
+        const cache = JSON.parse(cachedData);
+        const now = new Date().getTime();
+        const cachedResult = cache[topic.toLowerCase()];
+
+        if (cachedResult && now - cachedResult.timestamp < CACHE_DURATION) {
+          console.log("Using cached data for:", topic);
+          return cachedResult.data;
         }
-    };
+      } catch (error) {
+        console.error("Error reading cache:", error);
+      }
+    }
+    return null;
+  };
 
-    return (
-        <div>
-            {/* Search Bar Form */}
-            <div className="w-full flex justify-center mb-4">
-                <form onSubmit={handleSubmit} className="w-full max-w-xl">
-                    <div className="flex items-center border border-yellow-500 rounded-lg overflow-hidden shadow-md transition duration-300 ease-in-out transform hover:scale-105">
-                        <input
-                            className="appearance-none bg-gray-800 border-none w-full text-white py-2 px-4 leading-tight focus:outline-none transition duration-300 ease-in-out placeholder-gray-400"
-                            type="text"
-                            placeholder="Search..."
-                            aria-label="Search"
-                            value={query}
-                            onChange={(e) => setQuery(e.target.value)}
-                        />
-                        <button
-                            className="flex-shrink-0 bg-blue-500 hover:bg-blue-700 text-sm text-white py-2 px-4 rounded-lg transition duration-300 ease-in-out"
-                            type="submit"
-                        >
-                            Search
-                        </button>
-                    </div>
-                </form>
-            </div>
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const trimmedQuery = query.trim();
+    if (!trimmedQuery) return;
 
-            {/* Search Results or Default Display */}
-            <div className="mt-4 w-full max-w-4xl">
-                {query && searchResults.length === 0 ? (
-                    <p className="text-center text-white mb-4 font-bold text-3xl">
-                        No results found. Here are some recommendations:
-                    </p>
-                ) : null}
+    setIsLoading(true);
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {searchResults.length > 0 ? (
-                        searchResults.map(box => (
-                            <Link
-                                href={box.link}
-                                key={box.id}
-                                className="flex flex-col items-center bg-gray-800 p-4 rounded-lg border border-brown-500 hover:bg-blue-500 transition duration-200 transform hover:scale-105"
-                            >
-                                <img src={box.image} alt={box.title} className="w-full h-32 object-cover mb-2 rounded-md" />
-                                <h2 className="text-lg font-semibold text-center text-white hover:text-black">{box.title}</h2>
-                            </Link>
-                        ))
-                    ) : (
-                        boxes.map(box => (
-                            <Link
-                                href={box.link}
-                                key={box.id}
-                                className="flex flex-col items-center bg-blue-800 p-4 rounded-lg border border-gray-500 hover:bg-blue-500 transition duration-200 transform hover:scale-105"
-                            >
-                                <img src={box.image} alt={box.title} className="w-full h-32 object-cover mb-2 rounded-md" />
-                                <h2 className="text-lg font-semibold text-center text-white hover:text-black">{box.title}</h2>
-                            </Link>
-                        ))
-                    )}
-                </div>
-            </div>
+    try {
+      // Format the query with proper capitalization
+      const properlyFormattedQuery = capitalizeWords(trimmedQuery);
+
+      // Filter topics
+      const filteredTopics = defaultTopics.filter((topic) =>
+        topic.title.toLowerCase().includes(trimmedQuery.toLowerCase())
+      );
+
+      // Check cache first
+      const cachedSteps = getCachedSteps(trimmedQuery);
+      let learningSteps;
+      let isFromCache = false;
+
+      if (cachedSteps) {
+        // Short delay for cached results to show loading state
+        await new Promise(resolve => setTimeout(resolve, 300));
+        learningSteps = {
+          ...cachedSteps,
+          topic: properlyFormattedQuery
+        };
+        isFromCache = true;
+      } else {
+        // Get learning steps from API with more detailed request
+        const response = await fetch("http://localhost:8000/api/learning-steps", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            topic: trimmedQuery,
+            format: "detailed",
+            level: "comprehensive",
+            style: "explanatory"
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch learning steps");
+        }
+
+        const data = await response.json();
+        
+        if (data.success) {
+          // Cache the response
+          try {
+            const cachedData = localStorage.getItem(CACHE_KEY);
+            const cache = cachedData ? JSON.parse(cachedData) : {};
+            cache[trimmedQuery.toLowerCase()] = {
+              data,
+              timestamp: new Date().getTime(),
+            };
+            localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
+          } catch (error) {
+            console.error("Error setting cache:", error);
+          }
+
+          learningSteps = {
+            ...data,
+            topic: properlyFormattedQuery
+          };
+        }
+      }
+
+      // Send results back to parent component
+      onSearchResults({
+        searchResults: filteredTopics,
+        learningSteps,
+        isFromCache,
+        formattedQuery: properlyFormattedQuery,
+        currentQuery: trimmedQuery,
+        hasSearched: true
+      });
+
+    } catch (error) {
+      console.error("Error in search:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleChange = (e) => {
+    setQuery(e.target.value);
+  };
+
+  return (
+    <div className="w-full flex justify-center mb-8">
+      <form onSubmit={handleSubmit} className="w-full max-w-xl">
+        <div className={`flex items-center bg-gradient-to-r from-blue-950 via-blue-900 to-blue-800 rounded-lg overflow-hidden shadow-lg transition-all duration-300 transform hover:scale-105 border ${isLoading ? 'border-blue-400/50 shadow-blue-400/20' : 'border-blue-700/30'}`}>
+          <input
+            className="appearance-none bg-transparent w-full text-white py-3 px-4 leading-tight focus:outline-none transition duration-300 ease-in-out placeholder-blue-300/50 font-light"
+            type="text"
+            placeholder="Search a topic to learn..."
+            aria-label="Search"
+            value={query}
+            onChange={handleChange}
+            disabled={isLoading}
+          />
+          <button
+            className={`flex items-center space-x-2 px-6 py-3 transition-all duration-300 ease-in-out font-medium
+              ${isLoading 
+                ? 'bg-blue-600/50 cursor-wait' 
+                : 'bg-gradient-to-r from-blue-700 via-blue-600 to-blue-800 hover:from-blue-600 hover:via-blue-500 hover:to-blue-700'} 
+              text-white rounded-lg`}
+            type="submit"
+            disabled={isLoading || !query.trim()}
+          >
+            {isLoading ? (
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                <span>Searching</span>
+              </>
+            ) : (
+              'Search'
+            )}
+          </button>
         </div>
-    );
+      </form>
+    </div>
+  );
 }

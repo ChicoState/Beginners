@@ -2,74 +2,73 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap');
-
 :root {
-    --background: #fceed1;
-    --foreground: #171717;
-    --cursive-font: 'Dancing Script', cursive; /* Define the cursive font */
+    --background: #000000;
+    --foreground: #ffffff;
+    --nav-background: rgba(18, 18, 18, 0.98);
+    --card-background: #111111;
 }
 
 @media (prefers-color-scheme: dark) {
     :root {
-        --background: #fceed1;
-        --foreground: #ededed;
+        --background: #000000;
+        --foreground: #ffffff;
     }
 }
 
 body {
-    color: #fceed1;
+    color: var(--foreground);
     background: var(--background);
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: var(--font-geist-sans);
 }
 
-/* Enhanced styles for the search container */
 .search-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 30px;
-    padding: 10px;
-    background: rgba(255, 255, 255, 0.1);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-    transition: background 0.3s ease;
+    border-radius: 12px;
+    padding: 12px;
+    background: var(--card-background);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
 }
 
-    .search-container:hover {
-        background: rgba(255, 255, 255, 0.2);
-    }
+.search-container:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
+}
 
-    /* Styles for the input */
-    .search-container input {
-        border: 1px solid rgba(255, 255, 255, 0.5);
-        border-radius: 20px;
-        padding: 10px 20px;
-        margin-right: 10px;
-        background: rgba(0, 0, 0, 0.3);
-        color: white;
-        transition: border-color 0.3s ease;
-    }
+.search-container input {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 12px 20px;
+    margin-right: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+    transition: all 0.3s ease;
+}
 
-        .search-container input:focus {
-            border-color: sandybrown;
-            outline: none;
-        }
+.search-container input:focus {
+    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.08);
+    outline: none;
+}
 
-    /* Styles for the button */
-    .search-container button {
-        padding: 10px 20px;
-        background-color: sandybrown;
-        color: white;
-        border: none;
-        border-radius: 20px;
-        cursor: pointer;
-        transition: background-color 0.3s ease, transform 0.2s;
-    }
+.search-container button {
+    padding: 12px 24px;
+    background: linear-gradient(to right, #1a1a1a, #2a2a2a);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
 
-        .search-container button:hover {
-            background-color: #0056b3;
-            transform: scale(1.05);
-        }
+.search-container button:hover {
+    background: linear-gradient(to right, #2a2a2a, #3a3a3a);
+    transform: translateY(-1px);
+}
 
 @layer utilities {
     .text-balance {
@@ -77,32 +76,38 @@ body {
     }
 }
 
-/* Fading animation for welcome text */
 @keyframes fadeIn {
     0% {
         opacity: 0;
+        transform: translateY(10px);
     }
-
     100% {
         opacity: 1;
+        transform: translateY(0);
     }
 }
 
 .animate-fadeIn {
-    animation: fadeIn 2s ease-in-out;
+    animation: fadeIn 0.6s ease-out;
 }
 
-/* Hover effect for boxes */
-.hover\:scale-120:hover {
-    transform: scale(1.2);
+.hover-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Apply cursive font to specific classes */
-.cursive-font {
-    font-family: var(--cursive-font); /* Use the cursive font defined in :root */
+.hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
-/* Glowing effect */
-.glow {
-    text-shadow: 0 0 5px brown, 0 0 10px brown, 0 0 15px brown;
+.title-gradient {
+    background: linear-gradient(to right, #fff, #999);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.nav-background {
+    background: var(--nav-background);
+    backdrop-filter: blur(10px);
 }
