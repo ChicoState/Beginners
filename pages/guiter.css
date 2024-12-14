@@ -24,14 +24,14 @@ body, html, #app {
     text-transform: uppercase;
 }
   
-  #app a {
+#app a {
     margin-top: 10px;
     display: inline-block;
     text-decoration: none;
     color: #fff;
-  }
+}
   
-  #app canvas {
+#app canvas {
     display: block;
     position: fixed;
     z-index: -1;
