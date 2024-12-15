@@ -1,0 +1,124 @@
+.h1text {
+    font-family: 'Monospace'; 
+    text-align: center;
+    font-size: 50px;
+    color: #000000;
+}
+
+.h2text {
+    font-family: 'Arial', sans-serif;
+    color: #000000;
+    font-size: 30px;
+}
+
+.h3text {
+    font-family: 'Arial', sans-serif;
+    color: #000000;
+    font-size: 25px;
+}
+
+.h4text {
+    font-family: 'Arial', sans-serif;
+    color: #000000;
+    font-size: 15px;
+}
+
+.h5text {
+    font-family: 'Arial';
+    color: #cf1616c3;
+    font-size: 30px;
+}
+
+.button01 {
+   background-color: #fff;
+   border: solid 2px #191970;
+   color: #191970;
+   border-radius: 20px;
+   padding: 10px 30px;
+   text-decoration: none;
+   font-size: 1em;
+   box-shadow: 0 5px 0 #191970;
+   display: inline-block;
+   transition: .3s;
+}
+
+.button01:hover {
+    color: #191970;
+    transform: translateY(5px);
+    box-shadow: 0 0 0 #191970;
+}
+
+.button02 {
+    background-color: #fff;
+    border: solid 2px #207019;
+    color: #207019;
+    border-radius: 20px;
+    padding: 10px 30px;
+    text-decoration: none;
+    font-size: 1em;
+    box-shadow: 0 5px 0 #191970;
+    display: inline-block;
+    transition: .3s;
+}
+
+.button02:hover {
+     color: #191970;
+     transform: translateY(5px);
+     box-shadow: 0 0 0 #191970;
+}
+
+.button03 {
+    display: inline-block;
+    background: linear-gradient(to right, #00bfff 0%, #7fffd4 45%, #fffacd 100%);
+    background-size: 200% auto;
+    color: #fff;
+    border-radius: 40px;
+    padding: 20px 60px;
+    text-decoration: none;
+    font-size: 1.5em;
+    transition: .5s;
+}
+
+.button03:hover {
+    color: #fff;
+    background-position: right center;
+}
+
+.img-box {
+    text-align:center;
+    width: 90%;
+    margin:0 auto;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #fff;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+    width: 60vw;
+    height: 50vh;
+    margin: 100px auto;
+    padding: 50px;
+}
+
+.card h2 {
+    font-size: 1.5em;
+}
+
+.card .choice {
+    margin-top: 100px;
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+}
+
+.card .choice button {
+    border: 1px solid rgba(0, 0, 0);
+    padding: 10px 20px;
+    cursor: pointer;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    outline: none;
+    background-color: #fff;
+    width: 150px;
+}
