@@ -30,6 +30,14 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN npm run build
 
+# Test stage
+FROM base AS test
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+# Run tests
+CMD ["npm", "test"]
+
 # Production image
 FROM base AS runner
 WORKDIR /app
