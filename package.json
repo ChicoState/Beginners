@@ -3,11 +3,11 @@
     "version": "0.1.0",
     "private": true,
     "scripts": {
-        "dev": "next dev",
-        "build": "next build",
+        "dev": "BABEL_ENV=development next dev",
+        "build": "BABEL_ENV=production next build",
         "start": "next start",
         "lint": "next lint",
-        "test": "jest"
+        "test": "BABEL_ENV=test jest"
     },
     "devDependencies": {
         "@babel/core": "^7.26.0",
@@ -45,7 +45,7 @@
             "\\.(css|less|scss|sass)$": "identity-obj-proxy"
         },
         "transform": {
-            "^.+\\.(js|jsx|ts|tsx)$": "babel-jest",
+            "^.+\\.(js|jsx|ts|tsx)$": ["babel-jest", { "configFile": "./babel.config.js" }],
             "^.+\\.(png|jpg|jpeg|gif|bmp|svg)$": "jest-transform-stub"
         },
         "transformIgnorePatterns": [

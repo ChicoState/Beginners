@@ -141,7 +141,14 @@ export default function IphonePage() {
 
             {uploadedVideos.map((videoURL, uploadedIndex) => (
                 <div key={uploadedIndex} className="uploaded-video-container mt-4" style={{ maxWidth: '600px', margin: '0 auto' }}>
-                    <video controls src={videoURL} className="uploaded-video" style={{ width: '100%', height: 'auto' }}></video>
+                    <video 
+                        controls 
+                        src={videoURL} 
+                        className="uploaded-video" 
+                        style={{ width: '100%', height: 'auto' }}
+                        title={videoTitles[uploadedIndex] || `Uploaded Video ${uploadedIndex + 1}`}
+                        aria-label={videoTitles[uploadedIndex] || `Uploaded Video ${uploadedIndex + 1}`}
+                    ></video>
                     
                     {videoTitles[uploadedIndex] ? (
                         <p className="video-title mt-2 text-center">{videoTitles[uploadedIndex]}</p>

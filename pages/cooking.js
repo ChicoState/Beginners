@@ -5,34 +5,35 @@ import { useState, useEffect } from 'react';
 
 export default function CookingPage() {
     const [rating, setRating] = useState(null);
-  const [ratings, setRatings] = useState([]);
+    const [ratings, setRatings] = useState([]);
 
-  // ページ固有の識別子（ここでは'GuitarPage'を例に）
-  const pageId = 'CookingPage';
-  // コンポーネントがマウントされた時にローカルストレージから評価を読み込む
-  useEffect(() => {
-    const storedRatings = JSON.parse(localStorage.getItem(`ratings_${pageId}`)) || [];
-    setRatings(storedRatings);
-  }, []);
+    // ページ固有の識別子
+    const pageId = 'CookingPage';
 
-  // 評価を保存
-  const handleRating = (newRating) => {
-    const updatedRatings = [...ratings, newRating];
-    setRatings(updatedRatings);
-    localStorage.setItem(`ratings_${pageId}`, JSON.stringify(updatedRatings)); // ページ固有のキーを使用
-  };
+    // コンポーネントがマウントされた時にローカルストレージから評価を読み込む
+    useEffect(() => {
+        const storedRatings = JSON.parse(localStorage.getItem(`ratings_${pageId}`)) || [];
+        setRatings(storedRatings);
+    }, []);
 
-  // 平均評価を計算
-  const calculateAverageRating = () => {
-    if (ratings.length === 0) return 0;
-    const total = ratings.reduce((acc, curr) => acc + curr, 0);
-    return (total / ratings.length).toFixed(2);
-  };
+    // 評価を保存
+    const handleRating = (newRating) => {
+        const updatedRatings = [...ratings, newRating];
+        setRatings(updatedRatings);
+        localStorage.setItem(`ratings_${pageId}`, JSON.stringify(updatedRatings));
+    };
 
-    return (    
-        <div class="img-box">
+    // 平均評価を計算
+    const calculateAverageRating = () => {
+        if (ratings.length === 0) return 0;
+        const total = ratings.reduce((acc, curr) => acc + curr, 0);
+        return (total / ratings.length).toFixed(2);
+    };
+
+    return (
+            <div className="img-box">
             <header>
-                <h1 class="h1text">Cooking Tips</h1>
+                <h1 className="h1text">Cooking Tips</h1>
             </header>
             <main>
                 <section>
@@ -40,15 +41,15 @@ export default function CookingPage() {
                 </section>
 
                 <section>
-                    <h2 class="h2text">Before Cooking</h2>
+            <h2 className="h2text">Before Cooking</h2>
 
                     <article>
                         <h3 className="h3text">1. Find recipes from Cooking Book or website</h3>
 
-                        <a href="https://www.amazon.com/Beginners-Cookbook-Usborne-Cookbooks/dp/0746085389" class="button01">Book link</a>
+                <a href="https://www.amazon.com/Beginners-Cookbook-Usborne-Cookbooks/dp/0746085389" className="button01">Book link</a>
                         <br></br>
                         <br></br>
-                        <a href="https://www.pacificfoods.com/recipes/?recipe-tags=most-loved&orderby=asc&gad_source=1&gclid=Cj0KCQiApNW6BhD5ARIsACmEbkVVvi9XTSLe_u0ndzIwDnT8vJjWTYmHc551Rg6mjtpD8T1yn0E0EyUaAlKMEALw_wcB" class="button02">Website link</a>
+                        <a href="https://www.pacificfoods.com/recipes/?recipe-tags=most-loved&orderby=asc&gad_source=1&gclid=Cj0KCQiApNW6BhD5ARIsACmEbkVVvi9XTSLe_u0ndzIwDnT8vJjWTYmHc551Rg6mjtpD8T1yn0E0EyUaAlKMEALw_wcB" className="button02">Website link</a>
                         <p className="h4text">
                             A cooking book or website are valuable resources for both beginners and experienced cooks.<br></br>
                             It provides structured recipes, new techniques, and a variety of cuisines, helping you expand your culinary skills.<br></br>
@@ -66,8 +67,8 @@ export default function CookingPage() {
                     </article>
 
                     <article>
-                        <h3 class="h3text">3. Wash Your Hands</h3>
-                        <p class="h4text">
+            <h3 className="h3text">3. Wash Your Hands</h3>
+            <p className="h4text">
                             We need to wash our hands before cooking to prevent the spread of harmful bacteria and germs that can contaminate food.<br></br>
                             This helps reduce the risk of foodborne illnesses and ensures that the food we prepare is safe to eat. <br></br>
                             Clean hands also prevent cross-contamination, where bacteria from raw foods, like meat or eggs, can transfer to other ingredients or cooking surfaces.
@@ -83,10 +84,10 @@ export default function CookingPage() {
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                                 referrerPolicy="strict-origin-when-cross-origin"
                                 allowFullScreen
-                            />
+                            ></iframe>
                         </div>
                     </article>
-                    <h2 class="h2text">When you are Cooking</h2>
+                    <h2 className="h2text">When you are Cooking</h2>
                     <article>
                         <h4 className="h3text">1. Start with Simple Recipes </h4>
                         <p className="h4text">
@@ -100,8 +101,26 @@ export default function CookingPage() {
                            Be very careful when using knives or hot pots. When using fire, avoid placing flammable materials around it, and take thorough safety precautions, especially if there are children in the household. Be careful not to cut your hands or burn yourself.
                            Inadditon, pay special attention to how you handle ingredients, especially raw meat or fish. Ensure that raw meat is cooked thoroughly, and always wash your hands and utensils thoroughly after handling these items to avoid contamination.
                         </p>
-                        <iframe width="560" height="315" src="https://www.youtube.com/embed/6lMA1VYSU9I?si=JpYVZNUoeTCIUKBo" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                        <iframe width="560" height="315" src="https://www.youtube.com/embed/_4MMHx8d4MA?si=CrGhp81wbuEMBoPk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                        <iframe 
+                            width="560" 
+                            height="315" 
+                            src="https://www.youtube.com/embed/6lMA1VYSU9I?si=JpYVZNUoeTCIUKBo" 
+                            title="YouTube video player" 
+                            frameBorder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                            referrerPolicy="strict-origin-when-cross-origin" 
+                            allowFullScreen
+                        ></iframe>
+            <iframe
+                width="560"
+                height="315"
+                            src="https://www.youtube.com/embed/_4MMHx8d4MA?si=CrGhp81wbuEMBoPk" 
+                title="YouTube video player"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+            ></iframe>
                     </article>
                     <article>
                         <h4 className="h3text">3. Accurate measurements </h4>
@@ -119,7 +138,7 @@ export default function CookingPage() {
                            By carefully balancing the flavors and making small adjustments, you'll significantly improve the final result.
                         </p>
                     </article>
-                    <h2 class="h2text">After Cooking</h2>
+                    <h2 className="h2text">After Cooking</h2>
 
                     <article>
                         <h3 className="h3text">1. Eat first</h3>
@@ -132,10 +151,19 @@ export default function CookingPage() {
                         <p className="h4text">
                         Don't forget to clean up. Wash your utensils and dishes promptly and keep your kitchen clean. It's important to maintain cleanliness after cooking.
                         </p>
-                        <iframe width="560" height="315" src="https://www.youtube.com/embed/bC0enZGyHoY?si=e8hQXj2SG28fbx7T" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                        <iframe 
+                            width="560" 
+                            height="315" 
+                            src="https://www.youtube.com/embed/bC0enZGyHoY?si=e8hQXj2SG28fbx7T" 
+                            title="YouTube video player" 
+                            frameBorder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                            referrerPolicy="strict-origin-when-cross-origin" 
+                            allowFullScreen
+                        ></iframe>
                     </article>
                     <article>
-                       <h2 class="h5text">Important Tips for cooking</h2>
+            <h2 className="h5text">Important Tips for cooking</h2>
                        <h3 className="h3text">1. Don't Worry About Mistakes</h3>
                         <p className="h4text">
                         Things might not go perfectly at first, and that's okay! With practice, you'll improve, and mistakes will help you learn, making your future dishes even better.
@@ -163,8 +191,7 @@ export default function CookingPage() {
                         </div>
                         <h3 className="h4text">Average Rating: {calculateAverageRating()} / 5</h3>
                     </div>
-            </main>
+        </main>
         </div>
-        
     );
 }

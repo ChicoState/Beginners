@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { defaultTopics } from "../constants/topics";
 
 export default function TopicsGrid({ searchResults = [] }) {
@@ -19,10 +20,13 @@ export default function TopicsGrid({ searchResults = [] }) {
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-60 group-hover:opacity-70 transition-opacity z-10"></div>
 
               {/* Background Image */}
-              <img
+              <Image
                 src={topic.image}
                 alt={topic.title}
-                className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
+                fill
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                className="object-cover transform group-hover:scale-105 transition-transform duration-300"
+                priority={topic.id <= 3}
               />
 
               {/* Content */}
