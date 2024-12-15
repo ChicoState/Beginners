@@ -1,7 +1,34 @@
 'use client';
 import './cooking.css';
+import Head from 'next/head';
+import { useState, useEffect } from 'react';
 
 export default function CookingPage() {
+    const [rating, setRating] = useState(null);
+  const [ratings, setRatings] = useState([]);
+
+  // ページ固有の識別子（ここでは'GuitarPage'を例に）
+  const pageId = 'CookingPage';
+  // コンポーネントがマウントされた時にローカルストレージから評価を読み込む
+  useEffect(() => {
+    const storedRatings = JSON.parse(localStorage.getItem(`ratings_${pageId}`)) || [];
+    setRatings(storedRatings);
+  }, []);
+
+  // 評価を保存
+  const handleRating = (newRating) => {
+    const updatedRatings = [...ratings, newRating];
+    setRatings(updatedRatings);
+    localStorage.setItem(`ratings_${pageId}`, JSON.stringify(updatedRatings)); // ページ固有のキーを使用
+  };
+
+  // 平均評価を計算
+  const calculateAverageRating = () => {
+    if (ratings.length === 0) return 0;
+    const total = ratings.reduce((acc, curr) => acc + curr, 0);
+    return (total / ratings.length).toFixed(2);
+  };
+
     return (    
         <div class="img-box">
             <header>
@@ -119,6 +146,23 @@ export default function CookingPage() {
                         </p>
                     </article>
                 </section>
+               {/* 評価セクション */}
+               <div className="rating-container">
+                        <h2 className="h3text">Rate this page</h2>
+                        <div className="stars">
+                            {[1, 2, 3, 4, 5].map((num) => (
+                                <span
+                                    key={num}
+                                    className={`star ${rating >= num ? 'filled' : ''}`}
+                                    onClick={() => handleRating(num)}
+                                    aria-label={`Rate ${num} stars`}
+                                >
+                                    ★
+                                </span>
+                            ))}
+                        </div>
+                        <h3 className="h4text">Average Rating: {calculateAverageRating()} / 5</h3>
+                    </div>
             </main>
         </div>
         
