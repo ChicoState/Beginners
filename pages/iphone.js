@@ -135,6 +135,7 @@ export default function IphonePage() {
                     accept="video/*"
                     onChange={handleVideoUpload}
                     style={{ display: 'none' }}
+                    data-testid="main-video-upload-input"
                 />
             </div>
 
@@ -200,7 +201,7 @@ export default function IphonePage() {
                             }}
                             className="comment-input"
                         />
-                        <button onClick={() => handleUploadedCommentSubmit(uploadedIndex)} className="comment-submit-button hover:bg-green-600 transition duration-300">Comment</button>
+                        <button onClick={() => handleUploadedCommentSubmit(uploadedIndex)} className="comment-submit-button hover:bg-green -600 transition duration-300">Comment</button>
                         <button onClick={() => handleDeleteUploadedVideo(uploadedIndex)} className="delete-video-button hover:bg-red-600 transition duration-300">Delete Video</button>
                     </div>
                 </div>
