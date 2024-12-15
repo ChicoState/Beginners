@@ -1,116 +1,90 @@
-'use client';
+import { useEffect, useState } from 'react';
 
-export default function ExpertProfilePage() {
-    const expert = {
-        name: "Luis Martinez",
-        email: "lemartinez5@example.com",
-        phone: "(123) 456-7890",
-        bio: "Computer Science student",
-        expertise: ["Artificial Intelligence", "Machine Learning", "Computer Science"],
-        socialLinks: {
-            linkedin: "https://linkedin.com/in/johndoe",
-            X: "https://X.com/johndoe",
-            github: "https://github.com/johndoe",
-        },
-    };
+export default function ExpertPage() {
+    const [expert, setExpert] = useState(null);
+    const [posts, setPosts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    const posts = [
-        { id: 1, title: "AI Basics", date: "2024-12-01" },
-        { id: 2, title: "Machine Learning for Beginners", date: "2024-12-05" },
-    ];
+    useEffect(() => {
+        async function fetchExpertAndPosts() {
+            try {
+                const response = await fetch('/api/expert');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch expert data');
+                }
+                const data = await response.json();
+                setExpert(data.expert);
+                setPosts(data.posts || []); // Ensure posts is an array
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        fetchExpertAndPosts();
+    }, []);
+
+    if (loading) return <p>Loading expert data...</p>;
+    if (error) return <p>Error: {error}</p>;
 
     return (
-        <main className="flex flex-col items-center p-12 bg-gray-900 min-h-screen">
-            {/* Expert Info Section */}
-            <div className="text-center mb-8">
-                <h1 className="text-4xl font-bold mb-4 text-yellow-400">Expert Profile</h1>
-                <p className="text-white text-2xl font-semibold">{expert.name}</p>
-                <p className="text-gray-400">{expert.email}</p>
-                <p className="text-gray-400">{expert.phone}</p>
-                <p className="text-gray-400 italic mb-4">{expert.bio}</p>
-                <p className="text-gray-400">
-                </p>
-            </div>
+        <div className="min-h-screen flex flex-col items-center bg-gray-100 p-4">
+            <h1 className="text-3xl font-bold mb-4">Expert Information</h1>
 
-            {/* Expertise Section */}
-            <div className="w-full max-w-4xl bg-gray-800 p-6 rounded-lg shadow-md mb-8">
-                <h2 className="text-2xl font-semibold text-yellow-400 mb-4">Expertise</h2>
-                <ul className="list-disc list-inside text-white">
-                    {expert.expertise.map((skill, index) => (
-                        <li key={index} className="mb-2">
-                            {skill}
+            {expert ? (
+                <div className="bg-white p-4 rounded shadow-md w-full max-w-lg">
+                    <p className="mb-2">
+                        <strong>Name:</strong> {expert.name}
+                    </p>
+                    <p className="mb-2">
+                        <strong>Email:</strong> {expert.email}
+                    </p>
+                    <p className="mb-2">
+                        <strong>Phone:</strong> {expert.phone}
+                    </p>
+                    <p className="mb-2">
+                        <strong>Bio:</strong> {expert.bio}
+                    </p>
+                    <p className="mb-2">
+                        <strong>Expertise:</strong> {expert.expertise}
+                    </p>
+                </div>
+            ) : (
+                <p className="text-red-500">No expert data available.</p>
+            )}
+
+            <h2 className="text-2xl font-semibold mt-6 mb-4">Posts</h2>
+            {Array.isArray(posts) && posts.length > 0 ? (
+                <ul className="w-full max-w-lg space-y-2">
+                    {posts.map((post) => (
+                        <li
+                            key={post.id}
+                            className="bg-gray-200 p-3 rounded shadow-md"
+                        >
+                            <h3 className="font-bold">{post.title}</h3>
+                            <p>{post.content}</p>
                         </li>
                     ))}
                 </ul>
-            </div>
-
-            {/* Posts Section */}
-            <div className="w-full max-w-4xl bg-gray-800 p-6 rounded-lg shadow-md mb-8">
-                <h2 className="text-2xl font-semibold text-yellow-400 mb-4">Your Posts</h2>
-                {posts.length > 0 ? (
-                    <ul className="space-y-4">
-                        {posts.map((post) => (
-                            <li key={post.id} className="text-white border-b border-gray-700 pb-2">
-                                <h3 className="text-xl">{post.title}</h3>
-                                <p className="text-gray-400 text-sm">Posted on: {post.date}</p>
-                            </li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p className="text-gray-400">You haven't posted anything yet.</p>
-                )}
-            </div>
-
-            {/* Social Links Section */}
-            <div className="w-full max-w-4xl bg-gray-800 p-6 rounded-lg shadow-md">
-                <h2 className="text-2xl font-semibold text-yellow-400 mb-4">Social Links</h2>
-                <ul className="text-white space-y-2">
-                    <li>
-                        <a
-                            href={expert.socialLinks.linkedin}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-blue-400 hover:underline"
-                        >
-                            LinkedIn
-                        </a>
-                    </li>
-                    <li>
-                        <a
-                            href={expert.socialLinks.X}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-blue-400 hover:underline"
-                        >
-                            X
-                        </a>
-                    </li>
-                    <li>
-                        <a
-                            href={expert.socialLinks.github}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-blue-400 hover:underline"
-                        >
-                            GitHub
-                        </a>
-                    </li>
-                </ul>
-            </div>
+            ) : (
+                <p className="text-gray-500">No posts available.</p>
+            )}
 
             {/* Login and Logout Buttons */}
-            <div className="flex space-x-4 mt-8">
+            <div className="mt-8 flex space-x-4">
                 <button
-                    className="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-500 transition"
+                    className="px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-400 transition"
                 >
                     Login
                 </button>
                 <button
-                    className="px-6 py-2 bg-red-600 text-white rounded hover:bg-red-500 transition"
+                    className="px-6 py-2 bg-red-500 text-white rounded hover:bg-red-400 transition"
                 >
                     Logout
                 </button>
             </div>
-        </main>
+        </div>
     );
 }
