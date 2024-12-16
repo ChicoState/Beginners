@@ -1,0 +1,123 @@
+body {
+  background-color: black;
+}
+.h1text {
+  font-family: "Moirai One", system-ui;
+  font-size: 60px;
+  text-align: center;
+  font-style: normal;
+  color: #00FFFF;
+}
+
+.h5text {
+  font-family: "Delius", cursive;
+  text-align: center;
+  font-size: 20px;
+  font-style: normal;
+  color:#ffffff;
+}
+
+
+.h3text{
+  font-family: "Cherry Bomb One", system-ui;
+  font-size: 30px;
+  font-style: normal;
+  color:#ff357f;
+}
+
+.h2text {
+  font-family: "Delius", cursive;
+  font-size: 20px;
+  font-style: normal;
+  color:#ffffff;
+}
+
+.tiptext {
+  font-family: "Delius", cursive;
+  font-size: 20px;
+  font-style: normal;
+  color:#576fe6;
+}
+
+.h4text {
+  font-family: "Delius", cursive;
+  font-size: 15px;
+  font-style: normal;
+  color:#ffffff;
+}
+
+.button1{
+  position: relative;
+  display: flex;
+  justify-content: space-around;
+  margin: 0 auto;
+  border-radius: 9999px;
+  max-width: 250px;
+  padding: 10px 25px;
+  font-family: "Delius", serif;
+  color: #fff;
+  font-weight: 200;
+  line-height: 1.8;
+  text-decoration: none;
+  transition: 0.3s ease-in-out;
+  background: linear-gradient(270deg, #3bade3 0%, #576fe6 25%, #9844b7 51%, #ff357f 100%);
+  background-position: 1% 50%;
+  background-size: 200% auto;
+  transition: all 0.3s ease-out;
+}
+.button1:hover {
+  color: #fff;
+  background-position: 99% 50%;
+  transform: scale(1.05);
+  /*ボックスの影*/  
+  box-shadow: 0 15px 15px rgba(87,111,230,0.4);
+}
+.button1:after {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-top: 3px solid #fff;
+  border-right: 3px solid #fff;
+  transform: rotate(45deg) translateY(-50%);
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  border-radius: 1px;
+  transition: 0.3s ease-in-out;
+}
+
+/* 星の評価システムのスタイル */
+.rating-container {
+  margin: 20px 0;
+  text-align: center;
+}
+
+.star {
+  font-size: 40px;
+  color: #ccc;  /* デフォルトの色を灰色に設定 */
+  cursor: pointer;
+  transition: color 0.3s ease;  /* ホバー時の色変化をスムーズに */
+}
+
+.star.filled {
+  color: gold;  /* 評価された星は金色 */
+}
+
+.star:hover {
+  color: gold;  /* ホバー時は金色 */
+}
+
+.average-rating {
+  text-align: center;
+  font-size: 1.2rem;
+  margin-top: 20px;
+  color: #333;
+}
+
+.a {
+  font-family: "Orbitron", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 30px;
+  font-style: normal;
+  color:#ffffff;
+}
