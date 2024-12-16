@@ -1,6 +1,5 @@
 'use client';
 import './guitar.css';
-import Head from 'next/head';
 import { useState, useEffect } from 'react';
 
 export default function GuitarPage() {
@@ -35,20 +34,12 @@ export default function GuitarPage() {
 
   return (
     <div>
-      <Head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Badeen+Display&family=Delius&family=Moirai+One&family=Rubik+Puddles&family=Sacramento&family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap"
-          rel="stylesheet"
-        />
-      </Head>
       <header>
         <h1 className="h1text">Guitar</h1>
         <h2 className="h4text">This is typically for acoustic guitar</h2>
       </header>
 
-      <main>
+      <main className="flex flex-col items-center p-24 bg-black">
         <h2 className="h3text">Buy your favorite guitar</h2>
         <h2 className="h2text">Tip: The quality improves around the $210 mark.</h2>
         <h2 className="h2text">Guitars in the $70 to $140 range can still be quite usable, </h2>
@@ -93,32 +84,29 @@ export default function GuitarPage() {
         <h2 className="h2text">1. Play everyday</h2>
         <h2 className="h4text">Plactice everyday, getting used to it is the most important thing.</h2>
         <h2 className="h4text">finger plactice for everyday</h2>
-        <iframe width="560" height="315" src="https://www.youtube.com/embed/yqod2-rDExI?si=GTmQUNvZ9xmNWejy" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-        <iframe width="560" height="315" src="https://www.youtube.com/embed/NeNBXDw5uE4?si=KM5664P03mVbTj0y" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/yqod2-rDExI?si=GTmQUNvZ9xmNWejy" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/NeNBXDw5uE4?si=KM5664P03mVbTj0y" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
         <h2 className="h2text">2. have fun</h2>
         <h2 className="h4text">This is very important, find guiter community or play for other people</h2>
 
-
-
-        
-                    {/* 評価セクション */}
-                    <div className="rating-container">
-                        <h2 className="h3text">Rate this page</h2>
-                        <div className="stars">
-                            {[1, 2, 3, 4, 5].map((num) => (
-                                <span
-                                    key={num}
-                                    className={`star ${rating >= num ? 'filled' : ''}`}
-                                    onClick={() => handleRating(num)}
-                                    aria-label={`Rate ${num} stars`}
-                                >
-                                    ★
-                                </span>
-                            ))}
-                        </div>
-                        <h3 className="h4text">Average Rating: {calculateAverageRating()} / 5</h3>
-                    </div>
-            </main>
+        {/* 評価セクション */}
+        <div className="rating-container">
+            <h2 className="h3text">Rate this page</h2>
+            <div className="stars">
+                {[1, 2, 3, 4, 5].map((num) => (
+                    <span
+                        key={num}
+                        className={`star ${rating >= num ? 'filled' : ''}`}
+                        onClick={() => handleRating(num)}
+                        aria-label={`Rate ${num} stars`}
+                    >
+                        ★
+                    </span>
+                ))}
+            </div>
+            <h3 className="h4text">Average Rating: {calculateAverageRating()} / 5</h3>
         </div>
-    );
+      </main>
+    </div>
+  );
 }
